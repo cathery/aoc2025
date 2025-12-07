@@ -2,16 +2,12 @@
 #include <cstdio>
 #include <fstream>
 #include <map>
-#include <set>
 
 int main()
 {
     std::ifstream Input("input.txt");
     size_t Part1Answer = 0;
     size_t Part2Answer = 0;
-
-    // Key is XIndex
-    std::set<size_t> BeamXPositions;
 
     // Key is XIndex, Val is number of timelines
     std::map<size_t, size_t> BeamXTimelines;
@@ -28,22 +24,17 @@ int main()
             }
             else if (Char == 'S')
             {
-                BeamXPositions.insert(XIndex);
                 BeamXTimelines[XIndex] += 1;
             }
             else if (Char == '^')
             {
-                if (bool bRemoved = BeamXPositions.erase(XIndex))
+                if (size_t TimelineCount = BeamXTimelines[XIndex])
                 {
-                    BeamXPositions.insert(XIndex-1);
-                    BeamXPositions.insert(XIndex+1);
+                    BeamXTimelines[XIndex-1] += TimelineCount;
+                    BeamXTimelines[XIndex+1] += TimelineCount;
+                    BeamXTimelines.erase(XIndex);
                     ++Part1Answer;
                 }
-
-                size_t TimelineCount = BeamXTimelines[XIndex];
-                BeamXTimelines[XIndex-1] += TimelineCount;
-                BeamXTimelines[XIndex+1] += TimelineCount;
-                BeamXTimelines.erase(XIndex);
             }
 
             ++XIndex;
